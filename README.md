@@ -6,3 +6,4 @@ I will put everything related to code/NN.
 Vagan... Hmm... Vagan... What is Vagan for? Vagan is (type here what are you doing)
 This is everything I wanted to say in this intro.
 
+Intro is dead. Long live the Intro.

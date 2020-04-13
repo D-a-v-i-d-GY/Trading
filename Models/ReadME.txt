@@ -1,0 +1,4 @@
+The model names have the following naming scheme:
+TrainingModel_Number_BatchSize_lossFunction_activationFunction_lookback_dataPercentage
+example:
+GRU_64_10_logcosh_tanh_40_1.h5

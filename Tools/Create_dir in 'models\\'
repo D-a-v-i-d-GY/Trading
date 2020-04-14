@@ -1,0 +1,15 @@
+import os
+
+last_dir = os.listdir('models')[-1]
+num = int(last_dir[3:]) + 1
+os.mkdir('models/Run%d' % num)
+...
+ModelCheckpoint(filepath='models/Run%d/model_{epoch}' % num)
+
+===================================================================================
+If your 'models' directory is the following (for example):
+Run1
+Run2
+Run325
+This code creates directory named Run326, not Run4 as you may think.
+Note: it is neccersary for your directory to be sorted.

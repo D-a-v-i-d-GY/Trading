@@ -1,15 +1,29 @@
 import os
 
-last_dir = os.listdir('models')[-1]
-num = int(last_dir[3:]) + 1
-os.mkdir('models/Run%d' % num)
-...
-ModelCheckpoint(filepath='models/Run%d/model_{epoch}' % num)
+#initialize NN
+arcitech = 'GRU'
+out_shape = 64
+window_size = 40
+NN = GRU(out_shape, input_shape=(window_size, 1), activation='tanh')
+NN_loss = 'logcosh'
+NN_opt = 'adam'
+NN_bs = 32
+tr_data = 'gold_sm'
 
+
+#This piece of code creates in models_info directory named for ex. GRU_64_32_logcosh_40_gold_sm_i
+model_dir = '%s_%d_%d_%s_%d_%s' % (arcitech, out_shape, NN_bs, NN_loss, window_size, tr_data)
+num = 0
+for direc in os.listdir('models_info'):
+    if model_dir in direc:
+        num += 1
+os.mkdir('models_info/%s_%d' % (model_dir,num))
+os.mkdir('models_info/%s_%d/Images' % (model_dir, num))
+os.mkdir('models_info/%s_%d/models' % (model_dir,num))
+os.mkdir('models_info/%s_%d/best_models' % (model_dir,num))
+...
+callbacks=[ModelCheckpoint(filepath='models_info/%s_%d/models/model_{epoch}.h5' % (model_dir, num)),
+                     ModelCheckpoint(filepath='models_info/%s_%d/best_models/best_model_{epoch}.h5' % (model_dir, num), save_best_only=True),
+                     MyPlotCallback(trainX, trainY, testX, testY, window_size, 'models_info/%s_%d/Images' % (model_dir, num))]
 ===================================================================================
-If your 'models' directory is the following (for example):
-Run1
-Run2
-Run325
-This code creates directory named Run326, not Run4 as you may think.
-Note: it is neccersary for your directory to be sorted.
+lalalalalalalalalalalalalalal☺☻♥♦♣♠•◘○♂♀♪♫☼☺►◄↕‼¶§▬↨↑↓→←∟↔

@@ -26,4 +26,4 @@ callbacks=[ModelCheckpoint(filepath='models_info/%s_%d/models/model_{epoch}.h5' 
                      ModelCheckpoint(filepath='models_info/%s_%d/best_models/best_model_{epoch}.h5' % (model_dir, num), save_best_only=True),
                      MyPlotCallback(trainX, trainY, testX, testY, window_size, 'models_info/%s_%d/Images' % (model_dir, num))]
 ===================================================================================
-lalalalalalalalalalalalalalal☺☻♥♦♣♠•◘○♂♀♪♫☼☺►◄↕‼¶§▬↨↑↓→←∟↔
+lalalalalalalalalalalalalalal☺☻♥♦♣♠•◘○♂♀♪♫☼☺►◄↕‼¶§▬↨↑↓→←

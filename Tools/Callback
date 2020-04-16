@@ -1,0 +1,79 @@
+import matplotlib
+#matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+from matplotlib.figure import Figure
+from tensorflow import keras
+import numpy as np
+import wandb
+
+
+from keras.models import Sequential, load_model
+
+
+def create_dataset_by_pred(data, model, N, look_back, rep_pred=True):
+    if rep_pred:
+        pred_data = data
+        for i in range(N):
+            next_input = pred_data[-look_back:][np.newaxis, :, np.newaxis]
+            next_data = model.predict(next_input)
+            pred_data = np.append(pred_data, next_data)
+            pred_data = pred_data
+        return pred_data[-N:]
+    else:
+        return model.predict(data[:, :, np.newaxis])
+
+
+class MyPlotCallback(keras.callbacks.Callback):
+    def __init__(self, trainX, trainY, testX, testY, look_back, filepath):
+        self.repeat_predictions = True
+        self.filepath = filepath
+        self.trainX = trainX
+        self.trainY = trainY
+        self.testX = testX
+        self.testY = testY
+        self.look_back = look_back
+
+    def on_epoch_end(self, epoch, logs):
+        if self.repeat_predictions:
+            pred= create_dataset_by_pred(self.trainX[-1, :, 0],
+                                           self.model, self.testX.shape[0], self.look_back)
+        else:
+            pred = model.predict(testX)
+
+        # Generate a figure with matplotlib</font>
+        figure = plt.figure(figsize=(40, 25))
+
+        font = {'family': 'DejaVu Sans',
+                'weight': 'bold',
+                'size': 35}
+
+        matplotlib.rc('font', **font)
+
+        ax1 = plt.subplot2grid((1, 2), (0, 0), fig=figure)
+        ax2 = plt.subplot2grid((1, 2), (0, 1), sharex=ax1, sharey=ax1, fig=figure)
+
+        plt.subplots_adjust(left=0.05, bottom=0.05, top=0.98, right=0.98, wspace=0.06)
+
+        ax1.plot([i / len(pred) for i in range(len(pred))], pred, color='red', linewidth=5)
+        ax1.plot([i / len(self.testY) for i in range(len(self.testY))], self.testY, color='blue', linewidth=5)
+        plt.xticks(fontsize='35')
+        plt.yticks(fontsize='35')
+
+        ax2.scatter(self.testY, pred, s=10, color='red')
+        ax2.plot([i / len(self.testY) for i in range(len(self.testY))], [i / len(self.testY) for i in range(len(self.testY))], color='blue', linewidth=5)
+
+        plt.xticks(fontsize='35')
+        plt.yticks(fontsize='35')
+
+        plt.savefig(self.filepath + f'/{epoch}.png')
+
+        plt.close(figure)
+
+==============================================================
+Callbackin talis es amen inch vonc WandB-i callbackin + filepath, vortex uzum es nkarnery save ani
+save-a anelu senc:
+0.png
+1.png
+...
+

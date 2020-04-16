@@ -1,5 +1,4 @@
 import matplotlib
-#matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
@@ -26,7 +25,6 @@ def create_dataset_by_pred(data, model, N, look_back, rep_pred=True):
 
 class MyPlotCallback(keras.callbacks.Callback):
     def __init__(self, trainX, trainY, testX, testY, look_back, filepath):
-        self.repeat_predictions = True
         self.filepath = filepath
         self.trainX = trainX
         self.trainY = trainY
@@ -35,11 +33,9 @@ class MyPlotCallback(keras.callbacks.Callback):
         self.look_back = look_back
 
     def on_epoch_end(self, epoch, logs):
-        if self.repeat_predictions:
-            pred= create_dataset_by_pred(self.trainX[-1, :, 0],
+        pred_pure = create_dataset_by_pred(self.trainX[-1, :, 0],
                                            self.model, self.testX.shape[0], self.look_back)
-        else:
-            pred = model.predict(testX)
+        pred = self.model.predict(self.testX)
 
         # Generate a figure with matplotlib</font>
         figure = plt.figure(figsize=(40, 25))
@@ -55,13 +51,17 @@ class MyPlotCallback(keras.callbacks.Callback):
 
         plt.subplots_adjust(left=0.05, bottom=0.05, top=0.98, right=0.98, wspace=0.06)
 
-        ax1.plot([i / len(pred) for i in range(len(pred))], pred, color='red', linewidth=5)
-        ax1.plot([i / len(self.testY) for i in range(len(self.testY))], self.testY, color='blue', linewidth=5)
+        len_pred_pure = len(pred_pure)
+        len_pred = len(pred)
+        len_testY = len(self.testY)
+
+        ax1.plot([i / len_pred_pure for i in range(len_pred_pure)], pred_pure, color='red', linewidth=5)
+        ax1.plot([i / len_testY for i in range(len_testY)], self.testY, color='blue', linewidth=5)
         plt.xticks(fontsize='35')
         plt.yticks(fontsize='35')
 
-        ax2.scatter(self.testY, pred, s=10, color='red')
-        ax2.plot([i / len(self.testY) for i in range(len(self.testY))], [i / len(self.testY) for i in range(len(self.testY))], color='blue', linewidth=5)
+        ax2.plot([i / len_pred_pure for i in range(len_pred)], pred, color='red', linewidth=5)
+        ax2.plot([i / len_testY for i in range(len_testY)], self.testY, color='blue', linewidth=5)
 
         plt.xticks(fontsize='35')
         plt.yticks(fontsize='35')
@@ -70,10 +70,5 @@ class MyPlotCallback(keras.callbacks.Callback):
 
         plt.close(figure)
 
-==============================================================
-Callbackin talis es amen inch vonc WandB-i callbackin + filepath, vortex uzum es nkarnery save ani
-save-a anelu senc:
-0.png
-1.png
-...
+
 
